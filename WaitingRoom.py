@@ -1,8 +1,8 @@
 class Patient:
     def __init__(self, name:str, surname:str, age:int):
-        self.name=name.strip()
-        self.surname=surname.strip()
-        self.age=age.strip()
+        self._name=name.strip()
+        self._surname=surname.strip()
+        self._age=int(str(age).lstrip('-0b'))
         self.next:Patient = None
     def set_next(self,p):
         self.next = p
@@ -11,11 +11,11 @@ class Patient:
         return self.next
 
     def get_name(self):
-        return self.name
+        return self._name
     def get_surname(self):
-        return self.surname
+        return self._surname
     def get_age(self):
-        return self.age
+        return self._age
 
 class WaitingRoom:
 
@@ -80,10 +80,19 @@ class TestPatient(unittest.TestCase):
        self.assertNotEqual(p1.get_surname(), p2.get_surname())
        self.assertNotEqual(p1.get_age(), p2.get_age())
     def test_trimmer(self):
-        p = Patient(" John", "Doe ", -30)
+        p = Patient(" John", "Doe ", 30)
         self.assertEqual(p.get_name(), "John")
         self.assertEqual(p.get_surname(), "Doe")
         self.assertEqual(p.get_age(), 30)
+    def test_initialization_with_bad_age(self):
+        p = Patient("Bob", "Brown", "-00025")
+        self.assertEqual(p._age, 25)  # '-00025' → int(25)
+
+    def test_set_next_links_patients(self):
+        p1 = Patient("John", "Doe", 40)
+        p2 = Patient("Jane", "Doe", 38)
+        p1.set_next(p2)
+        self.assertIs(p1.next, p2)
 
 class TestWaitingRoom(unittest.TestCase):
 
