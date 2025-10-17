@@ -1,44 +1,89 @@
-
 class Patient:
-    def __init__(self, name, surname, age):
-        self.name = name
-        self.surname = surname
-        self.age = age
+    def __init__(self, name:str, surname:str, age:int):
+        self.name=name.strip()
+        self.surname=surname.strip()
+        self.age=age.strip()
+        self.next:Patient = None
+    def set_next(self,p):
+        self.next = p
 
+    def get_next(self):
+        return self.next
+
+    def get_name(self):
+        return self.name
+    def get_surname(self):
+        return self.surname
+    def get_age(self):
+        return self.age
 
 class WaitingRoom:
+
     def __init__(self, size=10):
-        # Initialize an array with fixed size and empty slots
-        self._patients = [None] * size
-        self._size = size
-        self._count = 0
+        self._size=size
 
-    def add(self, p: Patient):
-        """Add a patient to the waiting queue."""
-        if self._count == self._size:
-            raise OverflowError("Waiting queue is full.")
-        self._patients[self._count] = p
-        self._count += 1
+        self._first: Patient = None
+        self._last: Patient = None
+        self._count: int = 0
+        self._size: int = size
 
-    def remove(self) -> Patient:
-        """Remove the first patient (FIFO) and shift remaining patients forward."""
+    def add(self,p:Patient):
+        if self._count+1 > self._size:
+            raise(OverflowError)
+        else:
+            if self._last != None:
+                self._last.set_next(p)
+                self._last = p
+                self._count += 1
+            else:
+                self._last=p
+                self._first=p
+                self._count += 1
+
+    def remove(self):
         if self._count == 0:
             return None
-        patient = self._patients[0]
-        # Shift all patients one position forward
-        for i in range(1, self._count):
-            self._patients[i - 1] = self._patients[i]
-        self._patients[self._count - 1] = None
-        self._count -= 1
-        return patient
+        else:
+            p = self._first
+            self._first=p.get_next()
+            self._count-=1
+            if self._first is None:
+                self._last=None
+            return p
 
-    def get_count(self) -> int:
-        """Return the number of patients currently waiting."""
+    def get_count(self):
         return self._count
+
+
+
+
+
 
 
 import unittest
 
+class TestPatient(unittest.TestCase):
+    def test_get_name_returns_correct_value(self):
+       p = Patient("John", "Doe", 30)
+       self.assertEqual(p.get_name(), "John")
+    def test_get_surname_returns_correct_value(self):
+       p = Patient("Jane", "Smith", 25)
+       self.assertEqual(p.get_surname(), "Smith")
+    def test_get_age_returns_correct_value(self):
+       p = Patient("Alice", "Brown", 40)
+       self.assertEqual(p.get_age(), 40)
+    def test_multiple_patients_independent_values(self):
+       p1 = Patient("Tom", "Miller", 20)
+       p2 = Patient("Eva", "Schneider", 35)
+       self.assertEqual(p1.get_name(), "Tom")
+       self.assertEqual(p2.get_name(), "Eva")
+       self.assertNotEqual(p1.get_surname(), p2.get_surname())
+       self.assertNotEqual(p1.get_age(), p2.get_age())
+    def test_trimmer(self):
+        p = Patient(" John", "Doe ", -30)
+        self.assertEqual(p.get_name(), "John")
+        self.assertEqual(p.get_surname(), "Doe")
+        self.assertEqual(p.get_age(), 30)
 
 class TestWaitingRoom(unittest.TestCase):
 
