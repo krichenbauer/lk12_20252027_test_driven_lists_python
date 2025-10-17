@@ -2,7 +2,10 @@ class Patient:
     def __init__(self, name, surname, age):
         self.name = name
         self.surname = surname
-        self.age = age
+        if age >= 0:
+            self.age = age
+        else:
+            self.age = 0
         self._next = None
 
     def set_next(self, p):
@@ -12,10 +15,10 @@ class Patient:
         return self._next
 
     def get_name(self):
-        return self.name
+        return self.name.strip()
 
     def get_surname(self):
-        return self.surname
+        return self.surname.strip()
 
     def get_age(self):
         return self.age
@@ -205,3 +208,7 @@ class TestPatient(unittest.TestCase):
         self.assertEqual(p2.get_name(), "Eva")
         self.assertNotEqual(p1.get_surname(), p2.get_surname())
         self.assertNotEqual(p1.get_age(), p2.get_age())
+
+    def test_negative_age(self):
+        p = Patient("Alice", "Brown", -10)
+        self.assertEqual(p.get_age(), 0)
