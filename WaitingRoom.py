@@ -1,36 +1,50 @@
-
 class Patient:
     def __init__(self, name, surname, age):
         self.name = name
         self.surname = surname
         self.age = age
+        self._next = None
+
+    def set_next(self, p):
+        self._next = p
+
+    def get_next(self):
+        return self._next
 
 
 class WaitingRoom:
     def __init__(self, size=10):
         # Initialize an array with fixed size and empty slots
-        self._patients = [None] * size
-        self._size = size
+        self._patients = []
+        self.size = size
+        self.first = None
+        self.last = None
         self._count = 0
 
     def add(self, p: Patient):
-        """Add a patient to the waiting queue."""
-        if self._count == self._size:
-            raise OverflowError("Waiting queue is full.")
-        self._patients[self._count] = p
+        if self.first is None:
+            self.first = p
+            self.last = p
+            self._count += 1
+            return
+
+        if self._count + 1 > self.size:
+            raise (OverflowError)
+        self.last.set_next(p)
+        self.last = p
         self._count += 1
 
+
     def remove(self) -> Patient:
-        """Remove the first patient (FIFO) and shift remaining patients forward."""
-        if self._count == 0:
+        if self.first is None:
             return None
-        patient = self._patients[0]
-        # Shift all patients one position forward
-        for i in range(1, self._count):
-            self._patients[i - 1] = self._patients[i]
-        self._patients[self._count - 1] = None
-        self._count -= 1
-        return patient
+        else:
+            tempP = self.first
+            self.first = self.first.get_next()
+            self._count -= 1
+            return tempP
+
+
 
     def get_count(self) -> int:
         """Return the number of patients currently waiting."""
@@ -38,7 +52,6 @@ class WaitingRoom:
 
 
 import unittest
-
 
 class TestWaitingRoom(unittest.TestCase):
 
@@ -123,6 +136,17 @@ class TestWaitingRoom(unittest.TestCase):
         self.assertEqual(room.get_count(), 0)
         self.assertIsNone(room.remove())
 
+    def test_add_remove_1(self):
+        room = WaitingRoom(size=5)
+
+        p1 = Patient("A", "One", 40)
+        p2 = Patient("B", "Two", 41)
+        p3 = Patient("C", "Three", 42)
+
+        room.add(p1)
+        self.assertEqual(room.get_count(), 1)
+        room.add(p2)
+        self.assertEqual(room.get_count(), 2)
 
 
 if __name__ == "__main__":
