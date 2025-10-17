@@ -26,9 +26,8 @@ class WaitingRoom:
             self.first = p
             self.last = p
             self._count += 1
-            return
 
-        if self._count + 1 > self.size:
+        else self._count + 1 > self.size:
             raise (OverflowError)
         self.last.set_next(p)
         self.last = p
