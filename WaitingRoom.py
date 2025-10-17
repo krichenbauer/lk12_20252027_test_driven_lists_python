@@ -11,6 +11,16 @@ class Patient:
     def get_next(self):
         return self._next
 
+    def get_name(self):
+        return self.name
+
+    def get_surname(self):
+        return self.surname
+
+    def get_age(self):
+        return self.age
+
+
 
 class WaitingRoom:
     def __init__(self, size=10):
@@ -27,11 +37,13 @@ class WaitingRoom:
             self.last = p
             self._count += 1
 
-        else self._count + 1 > self.size:
-            raise (OverflowError)
-        self.last.set_next(p)
-        self.last = p
-        self._count += 1
+
+        else:
+            if self._count + 1 > self.size:
+                    raise (OverflowError)
+            self.last.set_next(p)
+            self.last = p
+            self._count += 1
 
 
     def remove(self) -> Patient:
@@ -51,7 +63,6 @@ class WaitingRoom:
 
 
 import unittest
-
 class TestWaitingRoom(unittest.TestCase):
 
     def test_add_and_remove_single_patient(self):
@@ -147,6 +158,50 @@ class TestWaitingRoom(unittest.TestCase):
         room.add(p2)
         self.assertEqual(room.get_count(), 2)
 
+class TestPatient(unittest.TestCase):
+    def test_get_name_returns_correct_value(self):
+        p = Patient("John", "Doe", 30)
+        self.assertEqual(p.get_name(), "John")
+
+    def test_get_surname_returns_correct_value(self):
+        p = Patient("Jane", "Smith", 25)
+        self.assertEqual(p.get_surname(), "Smith")
+
+    def test_get_age_returns_correct_value(self):
+        p = Patient("Alice", "Brown", 40)
+        self.assertEqual(p.get_age(), 40)
+
+    def test_multiple_patients_independent_values(self):
+        p1 = Patient("Tom", "Miller", 20)
+        p2 = Patient("Eva", "Schneider", 35)
+        self.assertEqual(p1.get_name(), "Tom")
+        self.assertEqual(p2.get_name(), "Eva")
+        self.assertNotEqual(p1.get_surname(), p2.get_surname())
+        self.assertNotEqual(p1.get_age(), p2.get_age())
+
 
 if __name__ == "__main__":
     unittest.main()
+
+
+
+class TestPatient(unittest.TestCase):
+    def test_get_name_returns_correct_value(self):
+        p = Patient("John", "Doe", 30)
+        self.assertEqual(p.get_name(), "John")
+
+    def test_get_surname_returns_correct_value(self):
+        p = Patient("Jane", "Smith", 25)
+        self.assertEqual(p.get_surname(), "Smith")
+
+    def test_get_age_returns_correct_value(self):
+        p = Patient("Alice", "Brown", 40)
+        self.assertEqual(p.get_age(), 40)
+
+    def test_multiple_patients_independent_values(self):
+        p1 = Patient("Tom", "Miller", 20)
+        p2 = Patient("Eva", "Schneider", 35)
+        self.assertEqual(p1.get_name(), "Tom")
+        self.assertEqual(p2.get_name(), "Eva")
+        self.assertNotEqual(p1.get_surname(), p2.get_surname())
+        self.assertNotEqual(p1.get_age(), p2.get_age())
