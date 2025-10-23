@@ -30,39 +30,47 @@ class Patient:
 
     def get_next(self):
         return self._next
+    
+    def get_count(self, cur):
+        if self._next == None:
+            ''' Noone behind, so return current counter + me'''
+            return cur+1
+        else:
+            ''' At least one more, so tell him/her to count on'''
+            return self._next.get_count(cur+1)
 
 class WaitingRoom:
     def __init__(self, size = 10):
-        self.first = None
-        self.last = None
-        self.count = 0
-        self.size = size
+        self._first = None
+        self._last = None
+        self._size = size
 
     def add(self, p: Patient):
         """Add a patient to the waiting queue."""
-        if self.get_count() == self.size:
+        if self.get_count() == self._size:
             raise OverflowError("Waiting queue is full.")
               
-        if self.first == None:
-            self.first = p
-            self.last = p
-            self.count += 1
+        if self._first == None:
+            self._first = p
+            self._last = p
         else:
-            self.last.set_next(p)
-            self.last = p
-            self.count += 1
+            self._last.set_next(p)
+            self._last = p
 
     def remove(self) -> Patient:
         """Remove the first patient (FIFO) and shift remaining patients forward."""
-        if self.count == 0:
+        if self.get_count() == 0:
             return None
-        p = self.first
-        self.first = p.get_next()
-        self.count -= 1
+        p = self._first
+        self._first = p.get_next()
         return p
     
     def get_count(self) -> int:
-        return self.count
+        if self._first == None:
+            return 0
+        else:
+            return self._first.get_count(0)
+        
 
 class TestWaitingRoom(unittest.TestCase):
     def test_add_and_remove_single_patient(self):
