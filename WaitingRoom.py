@@ -38,11 +38,16 @@ class Patient:
         else:
             ''' At least one more, so tell him/her to count on'''
             return self._next.get_count(cur+1)
+    
+    def add(self, p):
+        if self._next == None:
+            self._next = p
+        else:
+            self._next.add(p)
 
 class WaitingRoom:
     def __init__(self, size = 10):
         self._first = None
-        self._last = None
         self._size = size
 
     def add(self, p: Patient):
@@ -52,10 +57,8 @@ class WaitingRoom:
               
         if self._first == None:
             self._first = p
-            self._last = p
         else:
-            self._last.set_next(p)
-            self._last = p
+            self._first.add(p)
 
     def remove(self) -> Patient:
         """Remove the first patient (FIFO) and shift remaining patients forward."""
