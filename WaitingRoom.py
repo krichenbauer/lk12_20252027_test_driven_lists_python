@@ -1,11 +1,38 @@
 import unittest
 
+class Node:
+    def __init__(self, data):
+        self._data = data
+        self._next = None
+    
+    def set_next(self, nextNode:"Node"):
+        self._next = nextNode
+
+    def get_next(self):
+        return self._next
+    
+    def get_data(self):
+        return self._data
+
+    def get_count(self, cur):
+        if self._next == None:
+            ''' Noone behind, so return current counter + me'''
+            return cur+1
+        else:
+            ''' At least one more, so tell him/her to count on'''
+            return self._next.get_count(cur+1)
+    
+    def add(self, data):
+        if self._next == None:
+            self._next = Node(data)
+        else:
+            self._next.add(data)
+    
 class Patient:
-    def __init__(self, name: str, surname: str, age: int, next = None):
+    def __init__(self, name: str, surname: str, age: int):
         self._name = name.strip()
         self._surname = surname.strip()
         self._age = abs(age)
-        self._next = next
 
     def get_name(self) -> str:
        return self._name
@@ -25,48 +52,31 @@ class Patient:
     def set_age(self, age: int):
        self._age = age
 
-    def set_next(self, p):
-        self._next = p
-
-    def get_next(self):
-        return self._next
     
-    def get_count(self, cur):
-        if self._next == None:
-            ''' Noone behind, so return current counter + me'''
-            return cur+1
-        else:
-            ''' At least one more, so tell him/her to count on'''
-            return self._next.get_count(cur+1)
-    
-    def add(self, p):
-        if self._next == None:
-            self._next = p
-        else:
-            self._next.add(p)
 
 class WaitingRoom:
     def __init__(self, size = 10):
         self._first = None
         self._size = size
 
-    def add(self, p: Patient):
+    def add(self, data):
         """Add a patient to the waiting queue."""
         if self.get_count() == self._size:
             raise OverflowError("Waiting queue is full.")
               
         if self._first == None:
-            self._first = p
+            self._first = Node(data)
         else:
-            self._first.add(p)
+            self._first.add(data)
 
     def remove(self) -> Patient:
         """Remove the first patient (FIFO) and shift remaining patients forward."""
         if self.get_count() == 0:
             return None
-        p = self._first
-        self._first = p.get_next()
-        return p
+        else:
+            old_first_node = self._first
+            self._first = old_first_node.get_next()
+            return old_first_node.get_data()
     
     def get_count(self) -> int:
         if self._first == None:
