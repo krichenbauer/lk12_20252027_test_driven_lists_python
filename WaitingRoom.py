@@ -48,6 +48,13 @@ class WaitingRoom:
             self._first = Node(data)
         else:
             self._first.add(data)
+    
+    def push(self, data):
+        new_node = Node(data)
+        new_node.set_next(self._first)
+        self._first = new_node
+
+
 
     def remove(self) -> Patient:
         """Remove the first patient (FIFO) and shift remaining patients forward."""
@@ -141,7 +148,77 @@ class TestWaitingRoom(unittest.TestCase):
         self.assertIs(room.remove(), p3)
         self.assertEqual(room.get_count(), 0)
         self.assertIsNone(room.remove())
+    
+    def test_add_and_remove_four_patients_lifo(self):
+        
+        room = WaitingRoom()
+        
+        p7 = Patient("Helena", "Doe", 31)
+        p17 = Patient("John", "Doe", 30)
+        p34 = Patient("Maria", "Moser", 76)
+        p2195 = Patient("Max", "Mustermann", 19)
+        
+        self.assertEqual(room.get_count(), 0)
 
+        room.push(p2195)
+        room.push(p34)
+        room.push(p17)
+        room.push(p7)
+
+        self.assertEqual(room.get_count(), 4)
+
+        removed = room.remove()
+        self.assertEqual(removed, p7)
+        self.assertEqual(room.get_count(), 3)
+
+        removed = room.remove()
+        self.assertEqual(removed, p17)
+        self.assertEqual(room.get_count(), 2)
+
+        removed = room.remove()
+        self.assertEqual(removed, p34)
+        self.assertEqual(room.get_count(), 1)
+
+        removed = room.remove()
+        self.assertEqual(removed, p2195)
+        self.assertEqual(room.get_count(), 0)
+        self.assertIsNone(room.remove())
+
+
+def test_add_and_remove_four_patients_mixed_order(self):
+        
+        room = WaitingRoom()
+        
+        p7 = Patient("Helena", "Doe", 31)
+        p17 = Patient("John", "Doe", 30)
+        p34 = Patient("Maria", "Moser", 76)
+        p2195 = Patient("Max", "Mustermann", 19)
+        
+        self.assertEqual(room.get_count(), 0)
+
+        room.add(p2195)
+        room.add(p34)
+        room.push(p17)
+        room.push(p7)
+
+        self.assertEqual(room.get_count(), 4)
+
+        removed = room.remove()
+        self.assertEqual(removed, p7)
+        self.assertEqual(room.get_count(), 3)
+
+        removed = room.remove()
+        self.assertEqual(removed, p17)
+        self.assertEqual(room.get_count(), 2)
+
+        removed = room.remove()
+        self.assertEqual(removed, p2195)
+        self.assertEqual(room.get_count(), 1)
+
+        removed = room.remove()
+        self.assertEqual(removed, p34)
+        self.assertEqual(room.get_count(), 0)
+        self.assertIsNone(room.remove())
 
 
 if __name__ == "__main__":
