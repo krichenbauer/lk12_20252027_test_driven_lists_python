@@ -1,16 +1,30 @@
 import unittest
 
 
+class Leaf:
+    def __init__(self):
+        pass
+
+    def get_length(self, counter):
+        return counter
+    
+    def push(self, data):
+        return Node(data)
+    
+    def get_data(self):
+        return None
+    
+    def get_next(self):
+        return self
+    
+
 class Node:
     def __init__(self, data):
         self._data = data
-        self._next = None
+        self._next = Leaf()
 
     def get_length(self, counter):
-        if self._next == None:
-            return counter+1
-        else:
-            return self._next.get_length(counter+1)
+        return self._next.get_length(counter+1)
 
     def get_next(self):
         return self._next
@@ -22,43 +36,29 @@ class Node:
         return self._data
 
     def push(self, data):
-        if self._next == None:
-            self._next = Node(data)
-        else:
-            self._next.push(data)
+        self.set_next(self._next.push(data))
+        return self
     
 
 class List:
     def __init__(self):
-        self._first = None
+        self._first = Leaf()
     
     def push(self, data):
-        if self._first == None:
-            self._first = Node(data)
-        else:
-            self._first.push(data)
+        self._first = self._first.push(data)
     
     def unshift(self, data):
-        if self._first == None:
-            self._first = Node(data)
-        else:
-            new_first = Node(data)
-            new_first.set_next(self._first)
-            self._first = new_first
+        new_first = Node(data)
+        new_first.set_next(self._first)
+        self._first = new_first
     
     def shift(self):
-        if self._first == None:
-            return None
-        else:
-            result = self._first.get_data()
-            self._first = self._first.get_next()
-            return result
-        
+        result = self._first.get_data()
+        self._first = self._first.get_next()
+        return result
+    
     def get_length(self):
-        if self._first == None:
-            return 0
-        else:
-            return self._first.get_length(0)
+        return self._first.get_length(0)
 
 
 

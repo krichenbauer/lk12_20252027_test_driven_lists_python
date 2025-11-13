@@ -143,7 +143,7 @@ class TestWaitingRoom(unittest.TestCase):
         self.assertIsNone(room.remove())
 
 
-def test_add_and_remove_four_patients_mixed_order(self):
+    def test_add_and_remove_four_patients_mixed_order(self):
         
         room = WaitingRoom()
         
