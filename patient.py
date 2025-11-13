@@ -53,3 +53,7 @@ class TestPatient(unittest.TestCase):
     def test_negative_age(self):
        p = Patient("Stefan", "Müller", -20)
        self.assertEqual(p.get_age(), 20)
+
+
+if __name__ == "__main__":
+    unittest.main()
