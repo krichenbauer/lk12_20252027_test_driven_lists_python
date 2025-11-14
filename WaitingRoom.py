@@ -28,6 +28,9 @@ class WaitingRoom:
     ## method adapts to get_length()
     def get_count(self):
         return self._list.get_length()
+
+    def search_and_remove(self, patient: Patient):
+        self._list.search_and_remove(patient)
         
 
 class TestWaitingRoom(unittest.TestCase):
@@ -144,7 +147,6 @@ class TestWaitingRoom(unittest.TestCase):
 
 
     def test_add_and_remove_four_patients_mixed_order(self):
-        
         room = WaitingRoom()
         
         p7 = Patient("Helena", "Doe", 31)
@@ -177,6 +179,69 @@ class TestWaitingRoom(unittest.TestCase):
         self.assertEqual(removed, p34)
         self.assertEqual(room.get_count(), 0)
         self.assertIsNone(room.remove())
+
+
+    def test_search_and_remove_simple(self):
+        p7 = Patient("Helena", "Doe", 31)
+        p17 = Patient("John", "Doe", 30)
+        p34 = Patient("Maria", "Moser", 76)
+        p2195 = Patient("Max", "Mustermann", 19)
+
+        room = WaitingRoom(10)
+        room.add(p7)
+        room.add(p17)
+        room.add(p34)
+        room.add(p2195)
+
+        self.assertIs(room.get_count(), 4)
+        room.search_and_remove(p34)
+        self.assertIs(room.get_count(), 3)
+        self.assertIs(room.remove(), p7)
+        self.assertIs(room.remove(), p17)
+        self.assertIs(room.remove(), p2195)
+        self.assertIs(room.get_count(), 0)
+
+    def test_search_and_remove_duplicate(self):
+        p7 = Patient("Helena", "Doe", 31)
+        p17 = Patient("John", "Doe", 30)
+        p34 = Patient("Maria", "Moser", 76)
+        p2195 = Patient("Max", "Mustermann", 19)
+
+        room = WaitingRoom(10)
+        room.add(p7)
+        room.add(p34)
+        room.add(p17)
+        room.add(p34)
+        room.add(p2195)
+
+        self.assertIs(room.get_count(), 5)
+        room.search_and_remove(p34)
+        self.assertIs(room.get_count(), 4)
+        self.assertIs(room.remove(), p7)
+        self.assertIs(room.remove(), p17)
+        self.assertIs(room.remove(), p34)
+        self.assertIs(room.remove(), p2195)
+        self.assertIs(room.get_count(), 0)
+
+    def test_search_and_remove_non_existent(self):
+        p7 = Patient("Helena", "Doe", 31)
+        p17 = Patient("John", "Doe", 30)
+        p34 = Patient("Maria", "Moser", 76)
+        p2195 = Patient("Max", "Mustermann", 19)
+
+        room = WaitingRoom(10)
+        room.add(p7)
+
+        self.assertIs(room.get_count(), 1)
+        room.search_and_remove(p34)
+        self.assertIs(room.get_count(), 1)
+        self.assertIs(room.remove(), p7)
+        self.assertIs(room.get_count(), 0)
+        room.search_and_remove(p34)
+        self.assertIs(room.get_count(), 0)
+
+
+
 
 
 if __name__ == "__main__":

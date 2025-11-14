@@ -16,7 +16,9 @@ class Leaf:
     
     def get_next(self):
         return self
-    
+
+    def search_and_remove(self, data):
+        return self
 
 class Node:
     def __init__(self, data):
@@ -37,6 +39,13 @@ class Node:
 
     def push(self, data):
         self.set_next(self._next.push(data))
+        return self
+
+    def search_and_remove(self, data):
+
+        if self._data == data:
+            return self._next
+        self._next = self._next.search_and_remove(data)
         return self
     
 
@@ -59,6 +68,11 @@ class List:
     
     def get_length(self):
         return self._first.get_length(0)
+
+    def search_and_remove(self, data):
+        self._first = self._first.search_and_remove(data)
+
+
 
 
 
@@ -131,7 +145,20 @@ class TestListWithObjects(unittest.TestCase):
         self.assertEqual(l.shift().x, 30)
         self.assertEqual(l.shift().x, 10)
         self.assertEqual(l.shift().x, 20)
-        self.assertIsNone(l.shift())        
+        self.assertIsNone(l.shift())
+
+
+class TestListRemove(unittest.TestCase):
+    def test_search_and_remove(self):
+        l = List()
+        a = Dummy(10)
+        b = Dummy(20)
+        c = Dummy(30)
+
+        l.push(a)
+        l.push(b)
+        l.search_and_remove(a)
+        self.assertEqual(l.get_length(), 1)
 
 
 if __name__ == "__main__":
