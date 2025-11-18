@@ -191,8 +191,8 @@ class TestWaitingRoom(unittest.TestCase):
 
         room.add(aa)
         room.add(bb)
-        room.push(cc)
-        room.push(dd)
+        room.add(cc)
+        room.add(dd)
 
         self.assertEqual(room.get_count(), 4)
         ### exercise 1: draw object diagramm of this state!
@@ -206,11 +206,8 @@ class TestWaitingRoom(unittest.TestCase):
         self.assertEqual(room.remove(), aa)
         self.assertEqual(room.remove(), bb)
         self.assertEqual(room.remove(), cc)
+        self.assertEqual(room.get_count(), 0)
         self.assertIsNone(room.remove())
-        
-
-
-
 
 if __name__ == "__main__":
     unittest.main()
