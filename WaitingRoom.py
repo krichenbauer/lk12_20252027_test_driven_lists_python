@@ -178,6 +178,39 @@ class TestWaitingRoom(unittest.TestCase):
         self.assertEqual(room.get_count(), 0)
         self.assertIsNone(room.remove())
 
+    def test_remove_last_patient_from_waiting_room(self):
+        
+        room = WaitingRoom()
+        
+        aa = Patient("Anton", "Alpha", 11)
+        bb = Patient("Berta", "Bravo", 22)
+        cc = Patient("Carl", "Charly", 33)
+        dd = Patient("Denise", "Delta", 19)
+        
+        self.assertEqual(room.get_count(), 0)
+
+        room.add(aa)
+        room.add(bb)
+        room.push(cc)
+        room.push(dd)
+
+        self.assertEqual(room.get_count(), 4)
+        ### exercise 1: draw object diagramm of this state!
+        
+        ### exercise 2: draw sequence diagramm of this operation!
+        last = room.remove_last()
+
+        
+        self.assertEqual(last, dd)
+        self.assertEqual(room.get_count(), 3)
+        self.assertEqual(room.remove(), aa)
+        self.assertEqual(room.remove(), bb)
+        self.assertEqual(room.remove(), cc)
+        self.assertIsNone(room.remove())
+        
+
+
+
 
 if __name__ == "__main__":
     unittest.main()
